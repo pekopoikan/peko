@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Ninja {
+  id          Int         @id @default(autoincrement())
+  ninja_name  String      @unique
+  ninja_image String      @unique
+  TeamNinja   TeamNinja[]
+}
+
+model Gear {
+  id         Int             @id @default(autoincrement())
+  gear_name  String          @unique
+  gear_image String          @unique
+  gear_team  TeamNinjaGear[]
+}
+
+model Accessory {
+  id              Int                  @id @default(autoincrement())
+  accessory_name  String               @unique
+  accessory_image String               @unique
+  accessory_team  TeamNinjaAccessory[]
+}
+
+model TeamNinja {
+  id                  Int                  @id @default(autoincrement())
+  formationsId        Int?
+  ninjaId             Int?
+  Formations          Formations?          @relation(fields: [formationsId], references: [id])
+  teamninja_ninja     Ninja?               @relation(fields: [ninjaId], references: [id])
+  teamninja_gear      TeamNinjaGear[]
+  teamninja_accessory TeamNinjaAccessory[]
+}
+
+model Jade {
+  id            Int             @id @default(autoincrement())
+  jade_name     String          @unique
+  jade_image    String          @unique
+  TeamNinjaJade TeamNinjaJade[]
+}
+
+model TeamNinjaGear {
+  id Int @id @default(autoincrement())
+
+  gearId Int
+  gear   Gear @relation(fields: [gearId], references: [id])
+
+  teamId Int
+  team   TeamNinja @relation(fields: [teamId], references: [id])
+
+  jades TeamNinjaJade[]
+}
+
+model TeamNinjaJade {
+  jadeId Int
+  jade   Jade @relation(fields: [jadeId], references: [id])
+
+  teamGearId Int
+  teamGear   TeamNinjaGear @relation(fields: [teamGearId], references: [id])
+
+  @@id([jadeId, teamGearId])
+}
+
+model TeamNinjaAccessory {
+  accessoryId Int
+  accessory   Accessory @relation(fields: [accessoryId], references: [id])
+
+  teamId Int
+  team   TeamNinja @relation(fields: [teamId], references: [id])
+
+  @@id([accessoryId, teamId])
+}
+
+model Formations {
+  id                Int         @id @default(autoincrement())
+  formation_creator String
+  formation_title   String      @default("Untitled")
+  formation_type    String
+  formation_profile Profile     @relation(fields: [formation_creator], references: [profile_name])
+  formation_team    TeamNinja[]
+}
+
+model Profile {
+  id                  Int          @id @default(autoincrement())
+  profile_name        String       @unique
+  profile_description String       @db.VarChar(50)
+  profile_background  String
+  profile_picture     String       @default("")
+  Formations          Formations[]
+}

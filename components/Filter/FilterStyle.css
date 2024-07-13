@@ -1,0 +1,22 @@
+.filter {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.filter > div:first-child {
+    border-radius: 4px 0 0 4px !important;
+}
+
+.filter > button:first-child {
+    border-radius: 4px 0 0 4px !important;
+}
+
+.filter > div:last-child {
+    border-radius: 0 4px 4px 0 !important;
+}
+
+.filter > button:last-child {
+    border-radius: 0 4px 4px 0 !important;
+}
